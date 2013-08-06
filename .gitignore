@@ -1,0 +1,5 @@
+# Generated package
+*.xpi
+
+# Eclipse settings
+.settings
