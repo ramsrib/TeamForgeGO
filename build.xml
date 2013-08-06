@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<project name="teamforge_go" default="createxpi">
+	<target name="createxpi">
+		<zip destfile="teamforge_go.xpi">
+			<zipfileset dir="." includes="install.rdf" />
+			<zipfileset dir="." includes="bootstrap.js" />
+	                <zipfileset dir="." includes="scripts/**/*" />
+			<zipfileset dir="." includes="icon.png" />
+			<!-- optional -->
+			<zipfileset dir="." includes="chrome.manifest" />
+	                <zipfileset dir="." includes="options.xul" />
+			<zipfileset dir="." includes="locale/**/*" />
+			<!-- <zipfileset dir="." includes="chrome/**/*" /> -->
+		</zip>
+	</target>
+	<target name="clean">
+		<delete file="teamforge_go.xpi"/>
+	</target>
+</project>

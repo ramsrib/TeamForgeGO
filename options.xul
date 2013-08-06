@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<!DOCTYPE teamforge_options SYSTEM "chrome://teamforge_go/locale/options.dtd">
+<vbox xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  <setting type="string" pref="extensions.teamforge_go.url" title="&teamforge.url.title;" desc="&teamforge.url.desc;" multiline="false" />
+</vbox>
