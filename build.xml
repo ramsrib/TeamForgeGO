@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<project name="teamforge_go" default="createxpi">
-	<target name="createxpi">
+<project name="teamforge_go" default="build">
+	<target name="build">
 		<zip destfile="teamforge_go.xpi">
 			<zipfileset dir="." includes="install.rdf" />
 			<zipfileset dir="." includes="bootstrap.js" />

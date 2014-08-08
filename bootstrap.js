@@ -41,6 +41,7 @@ let justInstalled = false;
 
 // Remember if we're on Firefox or Fennec
 let platform = Services.appinfo.name == "Firefox" ? "desktop" : "mobile";
+let console = (Cu.import("resource://gre/modules/devtools/Console.jsm", {})).console;
 
 // TODO : Add address bar search
 // Add functionality to search from the location bar and hook up autocomplete
@@ -52,32 +53,38 @@ let platform = Services.appinfo.name == "Firefox" ? "desktop" : "mobile";
 
 // Add a default search engine and move it to the right place
 function addTeamForgeSearchEngine() {
-	
-  // Hide any existing "TeamForge" searches
-  let origEngine = Services.search.getEngineByName("TeamForge");
+
+  let engineName = "TeamForge";
+  let origEngine = Services.search.getEngineByName(engineName);
   if (origEngine != null) {
-    origEngine.hidden = true;
-    unload(function() origEngine.hidden = false);
+    Services.search.removeEngine(origEngine);
   }
 
   // Add the "TeamForge" search engine if necessary
-  let engineName = "TeamForge";
   try {
     Services.search.addEngineWithDetails(engineName, TEAMFORGE_ICON, "", "",
     "GET", getTeamForgeBase("/sf/go/{searchTerms}"));
+  } catch(ex) {
+    console.log("Caught exception when adding teamforge search engine : " + ex);
   }
-  catch(ex) {}
+
+  // Clean up when disabling
+  unload(function() {
+	Services.search.removeEngine(engine); 
+	// console.log("Removed the teamforge search engine.");
+  });
 
   // Get the just-added or existing engine
   let engine = Services.search.getEngineByName(engineName);
   if (engine == null)
     return;
 
-  // Move it to position #1 before Google
-  Services.search.moveEngine(engine, 0);
+  // Move it to position #2 before Google
+  if (!engine.hidden) {
+    Services.search.moveEngine(engine, 1);
+    Services.search.currentEngine = engine;
+  }
 
-  // Clean up when disabling
-  unload(function() Services.search.removeEngine(engine));
 }
 
 
@@ -132,16 +139,18 @@ function startup({id}, reason) AddonManager.getAddonByID(id, function(addon) {
   		  }
   		  catch(ex) {}
 
+                  // Clean up when disabling
+                  unload(function() { Services.search.removeEngine(engine); });
+
   		  // Get the just-added or existing engine
   		  let engine = Services.search.getEngineByName(engineName);
   		  if (engine == null)
   		    return;
 
-  		  // Move it to position #1 before Google
-  		  Services.search.moveEngine(engine, 0);
+  		  // Move it to position #2 before Google
+  		  Services.search.moveEngine(engine, 1);
+		  Services.search.currentEngine = engine;
   		  
-  		  // Clean up when disabling
-  		  unload(function() Services.search.removeEngine(engine));
   		}
   		 
   		  }
@@ -157,16 +166,16 @@ function startup({id}, reason) AddonManager.getAddonByID(id, function(addon) {
   
   // add the options listener
   let branch = Services.prefs.getBranch(PREF_BRANCH);
-  //branch.QueryInterface(Components.interfaces.nsIPrefBranch2); // deprecated, no need to do this anymore
-  
   branch.addObserver("", prefsObserver, false);
+
+  // console.log("Before calling add teamforge search engine.");
 
   // Add teamforge search engine to the browser
   addTeamForgeSearchEngine();
+  // console.log("After calling add teamforge search engine.");
     
-  unload(function() {
-	    branch.removeObserver("", prefsObserver);
-	  });
+  unload(function() { branch.removeObserver("", prefsObserver); });
+
 })
 
 
@@ -176,6 +185,7 @@ function startup({id}, reason) AddonManager.getAddonByID(id, function(addon) {
 function shutdown(data, reason) {
   // Clean up with unloaders when we're deactivating
   if (reason != APP_SHUTDOWN)
+    // console.log("Unloading the teamforge search engine when disabling the addon.");
     unload();
 }
 
