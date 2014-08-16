@@ -41,7 +41,7 @@ let justInstalled = false;
 
 // Remember if we're on Firefox or Fennec
 let platform = Services.appinfo.name == "Firefox" ? "desktop" : "mobile";
-let console = (Cu.import("resource://gre/modules/devtools/Console.jsm", {})).console;
+// let console = (Cu.import("resource://gre/modules/devtools/Console.jsm", {})).console;
 
 // TODO : Add address bar search
 // Add functionality to search from the location bar and hook up autocomplete
@@ -65,7 +65,7 @@ function addTeamForgeSearchEngine() {
     Services.search.addEngineWithDetails(engineName, TEAMFORGE_ICON, "", "",
     "GET", getTeamForgeBase("/sf/go/{searchTerms}"));
   } catch(ex) {
-    console.log("Caught exception when adding teamforge search engine : " + ex);
+    // console.log("Caught exception when adding teamforge search engine : " + ex);
   }
 
   // Clean up when disabling
