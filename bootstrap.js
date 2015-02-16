@@ -82,7 +82,7 @@ function addTeamForgeSearchEngine() {
   // Move it to position #2 before Google
   if (!engine.hidden) {
     Services.search.moveEngine(engine, 1);
-    Services.search.currentEngine = engine;
+    //Services.search.currentEngine = engine;
   }
 
 }
@@ -149,7 +149,7 @@ function startup({id}, reason) AddonManager.getAddonByID(id, function(addon) {
 
   		  // Move it to position #2 before Google
   		  Services.search.moveEngine(engine, 1);
-		  Services.search.currentEngine = engine;
+		  //Services.search.currentEngine = engine;
   		  
   		}
   		 
